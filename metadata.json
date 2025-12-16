@@ -1,0 +1,7 @@
+{
+  "name": "Sanu Transcribe",
+  "description": "A simple and elegant web application to transcribe audio files and microphone recordings into text using the power of Google's Gemini API.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sanu Transcribe</title>
+  <base href="/" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#3B82F6">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Inter:wght@400;500;600&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Poppins', 'sans-serif'],
+            body: ['Inter', 'sans-serif'],
+            mono: ['Fira Code', 'monospace'],
+          },
+          colors: {
+            'primary': '#3B82F6',
+            'secondary': '#8B5CF6',
+            'success': '#10B981',
+            'warning': '#F59E0B',
+            'error': '#EF4444',
+            'light-bg': '#F9FAFB',
+            'light-card': '#FFFFFF',
+            'text-primary': '#111827',
+            'text-secondary': '#6B7280',
+
+            'primary-dark': '#60A5FA',
+            'secondary-dark': '#A78BFA',
+            'success-dark': '#34D399',
+            'warning-dark': '#FBBF24',
+            'error-dark': '#F87171',
+            'dark-bg': '#111827',
+            'dark-card': '#1F2937',
+            'text-primary-dark': '#F9FAFB',
+            'text-secondary-dark': '#9CA3AF',
+          }
+        }
+      }
+    }
+  </script>
+  <script>
+    // Set theme on initial load to prevent FOUC
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  </script>
+<script type="importmap">
+{
+  "imports": {
+    "rxjs": "https://esm.sh/rxjs@^7.8.2?conditions=es2015",
+    "rxjs/operators": "https://esm.sh/rxjs@^7.8.2/operators?conditions=es2015",
+    "rxjs/ajax": "https://esm.sh/rxjs@^7.8.2/ajax?conditions=es2015",
+    "rxjs/webSocket": "https://esm.sh/rxjs@^7.8.2/webSocket?conditions=es2015",
+    "rxjs/testing": "https://esm.sh/rxjs@^7.8.2/testing?conditions=es2015",
+    "rxjs/fetch": "https://esm.sh/rxjs@^7.8.2/fetch?conditions=es2015",
+    "@angular/compiler": "https://next.esm.sh/@angular/compiler@^21.0.5?external=rxjs",
+    "@angular/core": "https://next.esm.sh/@angular/core@^21.0.5?external=rxjs",
+    "@angular/common": "https://next.esm.sh/@angular/common@^21.0.5?external=rxjs",
+    "@google/genai": "https://next.esm.sh/@google/genai@^1.33.0?external=rxjs",
+    "@angular/platform-browser": "https://next.esm.sh/@angular/platform-browser@^21.0.5?external=rxjs"
+  }
+}
+</script>
+</head>
+<body class="bg-light-bg dark:bg-dark-bg text-text-primary dark:text-text-primary-dark font-body antialiased transition-colors duration-300">
+  <app-root></app-root>
+</body>
+</html>

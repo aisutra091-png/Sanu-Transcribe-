@@ -1,0 +1,99 @@
+@if(loading()) {
+  <div class="flex flex-col h-full justify-center items-center">
+    <h2 class="font-display text-2xl font-bold text-text-primary dark:text-text-primary-dark mb-4">Transcription in Progress...</h2>
+    <p class="text-text-secondary dark:text-text-secondary-dark mb-6 text-center max-w-md">
+      Our AI is carefully listening to your audio. This may take a few moments depending on the file size.
+    </p>
+    
+    <div class="w-full max-w-lg">
+      <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5">
+        <div class="bg-primary dark:bg-primary-dark h-2.5 rounded-full transition-all duration-300 ease-linear" [style.width.%]="progress()"></div>
+      </div>
+      <p class="text-center text-primary dark:text-primary-dark font-medium mt-3 text-sm min-h-[1.25rem]">
+        {{ statusMessage() }}
+      </p>
+    </div>
+  </div>
+} @else if (transcription(); as tx) {
+  <div class="flex flex-col h-full">
+    <div>
+      <div class="flex-shrink-0 mb-4">
+        <h2 class="font-display text-2xl font-bold text-text-primary dark:text-text-primary-dark">Transcription Result</h2>
+        <p class="text-sm text-text-secondary dark:text-text-secondary-dark">
+          Source: <span class="font-medium text-text-primary dark:text-text-primary-dark">{{ tx.audioName }}</span>
+        </p>
+      </div>
+
+      <div class="flex-grow bg-slate-100 dark:bg-dark-bg p-6 rounded-lg border border-slate-200 dark:border-slate-700 overflow-auto mb-4 min-h-[15rem] max-h-[30rem]">
+        <p class="font-mono whitespace-pre-wrap text-lg text-text-primary dark:text-text-primary-dark leading-relaxed">{{ tx.text }}</p>
+      </div>
+    </div>
+    
+    <!-- Translation Section -->
+    <div class="mt-4">
+      @if(isTranslating()) {
+        <div class="flex items-center justify-center p-6 bg-slate-100 dark:bg-dark-bg rounded-lg border border-slate-200 dark:border-slate-700">
+          <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary dark:text-primary-dark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span class="text-text-secondary dark:text-text-secondary-dark">Translating to Hindi...</span>
+        </div>
+      } @else if (translatedText(); as translation) {
+        <div>
+          <h3 class="font-display text-xl font-semibold text-text-primary dark:text-text-primary-dark mb-2">Hindi Translation</h3>
+          <div class="bg-slate-100 dark:bg-dark-bg p-6 rounded-lg border border-slate-200 dark:border-slate-700 overflow-auto mb-4 min-h-[8rem] max-h-[20rem]">
+            <p class="font-mono whitespace-pre-wrap text-lg text-text-primary dark:text-text-primary-dark leading-relaxed">{{ translation }}</p>
+          </div>
+           <div class="flex justify-end">
+              <button (click)="copyTranslationToClipboard()" type="button" class="inline-flex items-center justify-center gap-x-2 rounded-md bg-light-card dark:bg-slate-600 px-3 py-1.5 text-sm font-semibold text-text-primary dark:text-text-primary-dark shadow-sm ring-1 ring-inset ring-slate-300 dark:ring-slate-500 hover:bg-slate-50 dark:hover:bg-slate-500 transition-colors">
+                <svg [class.hidden]="copyTranslationButtonText() !== 'Copy'" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-text-secondary dark:text-text-secondary-dark" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                <svg [class.hidden]="copyTranslationButtonText() === 'Copy'" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success dark:text-success-dark" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                {{ copyTranslationButtonText() }}
+              </button>
+           </div>
+        </div>
+      }
+      @if (translationError(); as error) {
+        <p class="mt-2 text-sm text-error dark:text-error-dark bg-red-50 dark:bg-opacity-10 p-3 rounded-md">{{ error }}</p>
+      }
+    </div>
+
+    <div class="mt-auto pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-200 dark:border-slate-700">
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <button (click)="copyToClipboard()" type="button" class="inline-flex items-center justify-center gap-x-2 rounded-md bg-light-card dark:bg-slate-600 px-4 py-2 text-sm font-semibold text-text-primary dark:text-text-primary-dark shadow-sm ring-1 ring-inset ring-slate-300 dark:ring-slate-500 hover:bg-slate-50 dark:hover:bg-slate-500 transition-colors">
+            <svg [class.hidden]="copyButtonText() !== 'Copy'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-text-secondary dark:text-text-secondary-dark" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+            <svg [class.hidden]="copyButtonText() === 'Copy'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success dark:text-success-dark" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+            Copy Original
+          </button>
+           @if (!translatedText()) {
+            <div class="flex items-center gap-2 border-slate-200 dark:border-slate-700 sm:border-l sm:pl-4">
+              <p class="text-sm font-medium text-text-secondary dark:text-text-secondary-dark hidden lg:block">Translate to Hindi from:</p>
+              <div class="flex gap-2">
+                <button (click)="translate('english')" [disabled]="isTranslating()" type="button" class="w-full sm:w-auto inline-flex items-center justify-center gap-x-1.5 rounded-md bg-light-card dark:bg-slate-600 px-3 py-2 text-sm font-semibold text-text-primary dark:text-text-primary-dark shadow-sm ring-1 ring-inset ring-slate-300 dark:ring-slate-500 hover:bg-slate-50 dark:hover:bg-slate-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                  @if(isTranslating() && translationSource() === 'english'){
+                    <svg class="animate-spin h-5 w-5 text-text-secondary dark:text-text-secondary-dark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    <span>Translating...</span>
+                  } @else {
+                    <span>English</span>
+                  }
+                </button>
+                <button (click)="translate('hinglish')" [disabled]="isTranslating()" type="button" class="w-full sm:w-auto inline-flex items-center justify-center gap-x-1.5 rounded-md bg-light-card dark:bg-slate-600 px-3 py-2 text-sm font-semibold text-text-primary dark:text-text-primary-dark shadow-sm ring-1 ring-inset ring-slate-300 dark:ring-slate-500 hover:bg-slate-50 dark:hover:bg-slate-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                  @if(isTranslating() && translationSource() === 'hinglish'){
+                    <svg class="animate-spin h-5 w-5 text-text-secondary dark:text-text-secondary-dark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    <span>Translating...</span>
+                  } @else {
+                    <span>Hinglish</span>
+                  }
+                </button>
+              </div>
+            </div>
+          }
+      </div>
+      <button (click)="onTranscribeNew()" type="button" class="w-full sm:w-auto inline-flex justify-center items-center gap-x-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90 transition-opacity">
+        Transcribe Another File
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8-8-8z"/></svg>
+      </button>
+    </div>
+  </div>
+}

@@ -1,0 +1,60 @@
+<div class="w-full">
+  <div class="mb-8">
+    <label for="audio-upload" class="block text-lg font-semibold text-text-primary dark:text-text-primary-dark mb-2">Upload an Audio or Video File</label>
+    <div class="mt-2 flex justify-center rounded-lg border border-dashed border-slate-300 dark:border-slate-600 px-6 py-10 hover:border-primary dark:hover:border-primary-dark transition-colors">
+      <div class="text-center">
+        <svg class="mx-auto h-12 w-12 text-slate-400 dark:text-slate-500" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+          <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        <div class="mt-4 flex text-sm leading-6 text-text-secondary dark:text-text-secondary-dark">
+          <label for="file-upload" class="relative cursor-pointer rounded-md bg-transparent font-semibold text-primary dark:text-primary-dark focus-within:outline-none focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 dark:focus-within:ring-offset-dark-card hover:text-opacity-80">
+            <span>Upload a file</span>
+            <input id="file-upload" name="file-upload" type="file" class="sr-only" (change)="handleFileChange($event)" accept="audio/mpeg,audio/wav,audio/ogg,video/mp4">
+          </label>
+          <p class="pl-1">or drag and drop</p>
+        </div>
+        <p class="text-xs leading-5 text-slate-500 dark:text-slate-400">MP3, WAV, OGG, MP4 up to 10MB</p>
+      </div>
+    </div>
+    @if(fileError(); as error) {
+      <p class="mt-2 text-sm text-error dark:text-error-dark">{{ error }}</p>
+    }
+  </div>
+
+  <div class="relative my-6">
+    <div class="absolute inset-0 flex items-center" aria-hidden="true">
+      <div class="w-full border-t border-slate-300 dark:border-slate-700"></div>
+    </div>
+    <div class="relative flex justify-center">
+      <span class="bg-light-card dark:bg-dark-card px-2 text-sm font-medium text-text-secondary dark:text-text-secondary-dark">OR</span>
+    </div>
+  </div>
+
+  <div>
+    <label class="block text-lg font-semibold text-text-primary dark:text-text-primary-dark mb-2">Record from Microphone</label>
+    <div class="mt-2 p-6 bg-slate-100 dark:bg-slate-800 rounded-lg flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+      @if(recordingState() === 'idle') {
+        <button (click)="startRecording()" type="button" class="inline-flex items-center gap-x-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-opacity">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.49 6-3.31 6-6.72h-1.7z"/></svg>
+          Start Recording
+        </button>
+      } @else {
+        <div class="flex items-center space-x-4">
+          <button (click)="stopRecording()" type="button" class="inline-flex items-center gap-x-2 rounded-md bg-success px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 transition-opacity">
+            <div class="h-5 w-5 flex items-center justify-center">
+              <span class="animate-ping absolute inline-flex h-4 w-4 rounded-full bg-red-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+            </div>
+            Stop & Transcribe
+          </button>
+          <button (click)="cancelRecording()" type="button" class="rounded-md bg-light-card dark:bg-slate-600 px-3.5 py-2.5 text-sm font-semibold text-text-primary dark:text-text-primary-dark shadow-sm ring-1 ring-inset ring-slate-300 dark:ring-slate-500 hover:bg-slate-50 dark:hover:bg-slate-500 transition-colors">
+            Cancel
+          </button>
+        </div>
+      }
+    </div>
+    @if (recordingError(); as error) {
+      <p class="mt-2 text-sm text-error dark:text-error-dark text-center">{{ error }}</p>
+    }
+  </div>
+</div>
